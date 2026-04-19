@@ -3,7 +3,13 @@ const mongoose = require('mongoose');
 // Function to connect to Mongoose and export the connection
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI);
+    const mongoUri = process.env.MONGODB_URI;
+    
+    if (!mongoUri) {
+      throw new Error('MONGODB_URI environment variable is not set');
+    }
+    
+    const conn = await mongoose.connect(mongoUri);
     console.log(`database CampusKart Connected: ${conn.connection.host}`);
 
     // Seed Admin User
