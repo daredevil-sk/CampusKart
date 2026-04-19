@@ -263,6 +263,11 @@ exports.getReports = async (req, res) => {
 exports.updateUserStatus = async (req, res) => {
   try {
     const { userId, status, days } = req.body;
+    
+    if (!userId || !status) {
+      return res.status(400).json({ success: false, message: 'userId and status are required.' });
+    }
+    
     const User = require('../models/user.model');
     
     // Safety: Prevent admin banning another admin
@@ -273,15 +278,25 @@ exports.updateUserStatus = async (req, res) => {
     }
 
     let banExpires = null;
-    if (days && days > 0) {
+    if (status === 'banned' && days && parseInt(days) > 0) {
       banExpires = new Date();
       banExpires.setDate(banExpires.getDate() + parseInt(days));
     }
 
-    const user = await User.findByIdAndUpdate(userId, { status, banExpires }, { new: true });
-    res.status(200).json({ success: true, message: `User status updated to ${status}`, data: user });
+    const updateData = { status };
+    if (banExpires) updateData.banExpires = banExpires;
+    if (status === 'active') updateData.banExpires = null; // Clear ban expiry when reactivating
+    
+    const user = await User.findByIdAndUpdate(userId, updateData, { new: true });
+    
+    res.status(200).json({ 
+      success: true, 
+      message: `User ${targetUser.name} status updated to ${status}${banExpires ? ` until ${banExpires.toDateString()}` : ''}`, 
+      data: user 
+    });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Update failed.' });
+    console.error('updateUserStatus error:', error);
+    res.status(500).json({ success: false, message: 'Update failed: ' + error.message });
   }
 };
 
