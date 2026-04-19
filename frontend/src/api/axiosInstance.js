@@ -1,39 +1,32 @@
 import axios from 'axios';
 
-// Create axios instance
-const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
-});
-
-// Flag to track if we've initialized
-let initialized = false;
-
-// Initialize on first request if not already done
-const ensureInitialized = () => {
-  if (!initialized) {
-    // Check if window has the API URL set by config.js
-    if (!window.__VITE_API_URL__) {
-      // If not set, initialize it here
-      const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-      window.__VITE_API_URL__ = isDevelopment 
-        ? 'http://localhost:5000/api'
-        : 'https://campuskart-3mzo.onrender.com/api';
-      console.log('⚙️ Initialized API URL:', window.__VITE_API_URL__);
-    }
-    initialized = true;
-  }
+// Determine API URL based on environment
+const getApiUrl = () => {
+  const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  return isDevelopment 
+    ? 'http://localhost:5000/api'
+    : 'https://campuskart-3mzo.onrender.com/api';
 };
 
-// Interceptor to dynamically set the correct API URL at request time
+// Create axios instance with correct URL
+const API_URL = getApiUrl();
+console.log('🚀 Frontend API URL set to:', API_URL);
+
+const api = axios.create({
+  baseURL: API_URL,
+});
+
+// Interceptor to ensure URL is correct before each request
 api.interceptors.request.use((config) => {
-  // Ensure we have the API URL
-  ensureInitialized();
+  // Force the baseURL to be correct
+  const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  const correctUrl = isDevelopment 
+    ? 'http://localhost:5000/api'
+    : 'https://campuskart-3mzo.onrender.com/api';
   
-  const runtimeApiUrl = window.__VITE_API_URL__;
-  if (runtimeApiUrl) {
-    config.baseURL = runtimeApiUrl;
-    console.log('🔗 Request to:', runtimeApiUrl);
-  }
+  config.baseURL = correctUrl;
+  
+  console.log('📤 Request:', config.method?.toUpperCase(), config.url, '→', correctUrl + config.url);
   
   // Attach the access token
   const token = localStorage.getItem('token');
