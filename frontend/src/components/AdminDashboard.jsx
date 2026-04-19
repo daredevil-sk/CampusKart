@@ -118,13 +118,23 @@ const AdminDashboard = () => {
 
   const handleUpdateStatus = async (userId, status, days) => {
     try {
-      const response = await api.patch('/messages/admin/users/status', { userId, status, days });
+      const daysNum = parseInt(days) || 0;
+      console.log('🔐 Sending ban request:', { userId, status, days: daysNum });
+      const response = await api.patch('/messages/admin/users/status', { userId, status, days: daysNum });
+      console.log('✅ Ban successful:', response.data);
       alert(response.data.message || `User status updated to ${status}`);
       fetchData();
     } catch (err) {
-      const errorMsg = err.response?.data?.message || err.message || 'Failed to update user status.';
+      console.error('❌ Ban error details:', {
+        status: err.response?.status,
+        message: err.response?.data?.message,
+        error: err.message,
+        url: err.config?.url,
+        method: err.config?.method,
+        data: err.config?.data
+      });
+      const errorMsg = err.response?.data?.message || err.message || 'Failed to update user status. (Check console for details)';
       alert(`Error: ${errorMsg}`);
-      console.error('Ban update error:', err);
     }
   };
 
