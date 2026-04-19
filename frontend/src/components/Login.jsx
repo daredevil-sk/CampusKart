@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
+import api from '../api/axiosInstance';
 import { AuthContext } from '../context/AuthContext';
 import { Mail, Lock, ShieldCheck, User } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -67,14 +68,14 @@ const Login = () => {
     try {
       if (isForgotPassword) {
         // Request Reset OTP
-        const { data } = await axios.post('http://localhost:5000/api/auth/forgot-password', {
+        const { data } = await api.post('/auth/forgot-password', {
           email: formData.email
         });
         setMessage(data.message);
         setShowResetOtp(true);
       } else if (isLogin) {
         // Traditional Login
-        const { data } = await axios.post('http://localhost:5000/api/auth/login', {
+        const { data } = await api.post('/auth/login', {
           email: formData.email,
           password: formData.password
         });
@@ -90,7 +91,7 @@ const Login = () => {
           return;
         }
 
-        const { data } = await axios.post('http://localhost:5000/api/auth/register', {
+        const { data } = await api.post('/auth/register', {
           name: formData.name,
           email: formData.email,
           password: formData.password
@@ -110,7 +111,7 @@ const Login = () => {
     setError('');
     setMessage('');
     try {
-      const { data } = await axios.post('http://localhost:5000/api/auth/resend-otp', {
+      const { data } = await api.post('/auth/resend-otp', {
         email: formData.email,
       });
       setMessage(data.message);
@@ -135,7 +136,7 @@ const Login = () => {
           return;
         }
 
-        const { data } = await axios.post('http://localhost:5000/api/auth/reset-password', {
+        const { data } = await api.post('/auth/reset-password', {
           email: formData.email,
           otp: formData.otp,
           newPassword: formData.password
@@ -145,7 +146,7 @@ const Login = () => {
         setShowResetOtp(false);
         setIsLogin(true); // Bring them efficiently back to login
       } else {
-        const { data } = await axios.post('http://localhost:5000/api/auth/verify-otp', {
+        const { data } = await api.post('/auth/verify-otp', {
           email: formData.email,
           otp: formData.otp
         });

@@ -63,7 +63,8 @@ const AdminDashboard = () => {
     if (location.state?.activeTab) setActiveTab(location.state.activeTab);
 
     const interval = setInterval(fetchData, 60000); // Slower background refresh
-    const newSocket = io('http://localhost:5000');
+    const socketUrl = window.location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://campuskart-3mzo.onrender.com';
+    const newSocket = io(socketUrl);
     setSocket(newSocket);
     newSocket.emit('user_online', user._id);
 

@@ -31,7 +31,8 @@ const AuctionRoom = () => {
   useEffect(() => {
     if (!user) return;
 
-    const newSocket = io('http://localhost:5000');
+    const socketUrl = window.location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://campuskart-3mzo.onrender.com';
+    const newSocket = io(socketUrl);
     setSocket(newSocket);
 
     newSocket.emit('join_room', { roomId: id, userId: user._id, type: 'auction' });

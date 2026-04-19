@@ -60,7 +60,8 @@ const Chat = () => {
       } catch (err) { console.error(err); }
     };
     fetchData();
-    const newSocket = io('http://localhost:5000');
+    const socketUrl = window.location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://campuskart-3mzo.onrender.com';
+    const newSocket = io(socketUrl);
     setSocket(newSocket);
     newSocket.emit('user_online', user._id);
     return () => newSocket.disconnect();
