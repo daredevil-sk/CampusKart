@@ -1,34 +1,19 @@
 import axios from 'axios';
 
-// Get API URL from multiple sources in order of priority:
-// 1. Runtime env var (set by window object)
-// 2. Build-time VITE_API_URL
-// 3. Fallback to localhost for development
-const getApiUrl = () => {
-  // Check if window has API URL set at runtime
-  if (window.__VITE_API_URL__) {
-    return window.__VITE_API_URL__;
-  }
-  
-  // Check build-time env var
-  if (import.meta.env.VITE_API_URL) {
-    return import.meta.env.VITE_API_URL;
-  }
-  
-  // Fallback for development
-  return 'http://localhost:5000/api';
-};
-
-const API_URL = getApiUrl();
-console.log('🔗 API URL:', API_URL); // Debug: show which API URL is being used
-
-// Axios instance with base URL
+// Create axios instance with temporary URL (will be overridden by interceptor)
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: 'http://localhost:5000/api', // Temporary - interceptor will override
 });
 
-// Attach the access token to every request
+// Interceptor to dynamically set the correct API URL at request time
 api.interceptors.request.use((config) => {
+  // Get the runtime API URL that was set by config.js
+  const runtimeApiUrl = window.__VITE_API_URL__ || 'http://localhost:5000/api';
+  
+  // Override the baseURL for each request
+  config.baseURL = runtimeApiUrl;
+  
+  // Attach the access token
   const token = localStorage.getItem('token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -47,7 +32,8 @@ api.interceptors.response.use(
 
       try {
         const refreshToken = localStorage.getItem('refreshToken');
-        const { data } = await axios.post(`${API_URL}/auth/refresh-token`, { refreshToken });
+        const runtimeApiUrl = window.__VITE_API_URL__ || 'http://localhost:5000/api';
+        const { data } = await axios.post(`${runtimeApiUrl}/auth/refresh-token`, { refreshToken });
 
         // Store the new access token
         localStorage.setItem('token', data.accessToken);
