@@ -1,17 +1,39 @@
 import axios from 'axios';
 
-// Create axios instance with temporary URL (will be overridden by interceptor)
+// Create axios instance
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api', // Temporary - interceptor will override
+  baseURL: 'http://localhost:5000/api',
 });
+
+// Flag to track if we've initialized
+let initialized = false;
+
+// Initialize on first request if not already done
+const ensureInitialized = () => {
+  if (!initialized) {
+    // Check if window has the API URL set by config.js
+    if (!window.__VITE_API_URL__) {
+      // If not set, initialize it here
+      const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      window.__VITE_API_URL__ = isDevelopment 
+        ? 'http://localhost:5000/api'
+        : 'https://campuskart-3mzo.onrender.com/api';
+      console.log('⚙️ Initialized API URL:', window.__VITE_API_URL__);
+    }
+    initialized = true;
+  }
+};
 
 // Interceptor to dynamically set the correct API URL at request time
 api.interceptors.request.use((config) => {
-  // Get the runtime API URL that was set by config.js
-  const runtimeApiUrl = window.__VITE_API_URL__ || 'http://localhost:5000/api';
+  // Ensure we have the API URL
+  ensureInitialized();
   
-  // Override the baseURL for each request
-  config.baseURL = runtimeApiUrl;
+  const runtimeApiUrl = window.__VITE_API_URL__;
+  if (runtimeApiUrl) {
+    config.baseURL = runtimeApiUrl;
+    console.log('🔗 Request to:', runtimeApiUrl);
+  }
   
   // Attach the access token
   const token = localStorage.getItem('token');
