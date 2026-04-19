@@ -1,0 +1,69 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply m-0 p-0 box-border text-zinc-100 bg-black;
+    background: radial-gradient(circle at 50% 0%, #18181b 0%, #000000 60%, #000000 100%);
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+@layer components {
+  .glassmorphism {
+    @apply bg-zinc-950/70 backdrop-blur-3xl border border-zinc-800 shadow-md;
+  }
+
+  .glass-card {
+    @apply bg-zinc-900/50 backdrop-blur-2xl border border-zinc-800/80 rounded-[2rem] p-6 transition-all duration-300 ease-in-out hover:border-zinc-500 hover:shadow-lg hover:shadow-black;
+  }
+
+  .glass-input {
+    @apply w-full bg-zinc-900 border border-zinc-800 rounded-[2rem] px-5 py-4 text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-white focus:border-white focus:bg-zinc-800 transition duration-300;
+  }
+
+  /* Make date/time picker icons white in Chrome/Edge */
+  .glass-input::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+  }
+
+  .glass-button {
+    @apply w-full bg-white hover:bg-zinc-200 text-black font-extrabold py-4 rounded-[2rem] transition-all duration-300 transform hover:-translate-y-0.5;
+  }
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+}
+
+.custom-scrollbar:hover::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.4s ease forwards;
+}

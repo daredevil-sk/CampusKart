@@ -1,0 +1,22 @@
+To be done:-
+- no email receiving for "forget password" (might be the free plan expiered)
+- need to check if the password reset thing is working or not
+
+
+
+Done (17):-
+- change the frontend design
+- the messages in the chat room going twice (need to refresh it, go to some other chat and then come back things will be sorted)
+- the mic feature is not working in the chat room (removed it completely, lol)
+- remove the broken link on the email icon in the chat room
+- added a good README.md file
+- change the line in the auction page
+- change the name of the website in the tab and also the favicon
+- change the name of the website from "Campus Kart" to "CampusKart"
+- change the "developed by" part
+- change the name in the copyright section
+- there are no slogans in the login page, so remove the arrors
+- used .env for the admin credentials
+- fixed few here and there log outputs and syntax errors
+- updated the .gitignore file
+- hello
