@@ -5,7 +5,7 @@
  */
 
 // Your Render backend URL - UPDATE THIS with your actual backend URL
-const PRODUCTION_API_URL = 'https://campuskart-pink.onrender.com/api';
+const PRODUCTION_API_URL = 'https://campuskart-3mzo.onrender.com/';
 
 export const initializeConfig = () => {
   // Get API URL from various sources
