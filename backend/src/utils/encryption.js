@@ -2,9 +2,16 @@ const crypto = require("crypto");
 
 const algorithm = "aes-256-cbc";
 
+// Use JWT_SECRET as fallback if CHAT_SECRET_KEY not defined
+const secretKey = process.env.CHAT_SECRET_KEY || process.env.JWT_SECRET;
+
+if (!secretKey) {
+  throw new Error('CHAT_SECRET_KEY or JWT_SECRET environment variable must be set');
+}
+
 const key = crypto
   .createHash("sha256")
-  .update(process.env.CHAT_SECRET_KEY)
+  .update(secretKey)
   .digest();
 
 function encryptText(text) {
